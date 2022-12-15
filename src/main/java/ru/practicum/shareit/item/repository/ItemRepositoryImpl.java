@@ -8,12 +8,14 @@ import ru.practicum.shareit.item.model.Item;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Primary
 @Component
 public class ItemRepositoryImpl implements ItemRepository {
     private final HashMap<Long, Item> items = new HashMap<>();
+    private long lastId = 0;
 
     @Override
     public Item get(long id) {
@@ -43,11 +45,14 @@ public class ItemRepositoryImpl implements ItemRepository {
         return new ArrayList<>(items.values());
     }
 
+    @Override
+    public List<Item> getUserItems(long userId) {
+        return new ArrayList<>(items.values().stream()
+                .filter(o -> o.getOwner().getId() == userId)
+                .collect(Collectors.toList()));
+    }
+
     private long getId() {
-        long lastId = items.entrySet().stream()
-                .mapToLong(o -> o.getValue().getId())
-                .max()
-                .orElse(0);
-        return lastId + 1;
+        return ++lastId;
     }
 }

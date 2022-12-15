@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import ru.practicum.shareit.item.model.Item;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * TODO Sprint add-controllers.
  */
@@ -13,8 +16,11 @@ import ru.practicum.shareit.item.model.Item;
 @Builder
 public class ItemDto {
     long id;
+    @NotBlank(message = "Не задано название вещи")
     String name;
+    @NotBlank(message = "Не задано описание вещи")
     String description;
-    boolean available;
-    long request;
+    @NotNull(message = "Не задана доступность вещи")
+    Boolean available;
+    Long request;
 }

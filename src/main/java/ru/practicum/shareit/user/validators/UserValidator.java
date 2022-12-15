@@ -15,13 +15,13 @@ public class UserValidator {
         if (userRepository.getAll().stream().
                 anyMatch(o -> o.getEmail().equals(email))) {
             throw new UserEmailOccupiedException(String.format("Email = %s уже занят", email));
-        };
+        }
     }
 
     public void validateUserIsExist(long userId) {
         if (userRepository.get(userId) == null) {
             throw new ObjectNotFoundException(String.format("Пользователь с id = %s не существует", userId));
-        };
+        }
     }
 
 }

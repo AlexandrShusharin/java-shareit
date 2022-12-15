@@ -10,4 +10,5 @@ public interface ItemRepository {
     Item update(Item item);
     void delete(long id);
     List<Item> getAll();
+    List<Item> getUserItems(long userId);
 }

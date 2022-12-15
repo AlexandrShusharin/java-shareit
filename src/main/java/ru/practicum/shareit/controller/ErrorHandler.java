@@ -1,5 +1,6 @@
 package ru.practicum.shareit.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,6 +13,7 @@ import ru.practicum.shareit.exeptions.UserEmailOccupiedException;
 import javax.validation.ValidationException;
 import java.util.Objects;
 
+@Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -24,25 +26,28 @@ public class ErrorHandler {
         } else {
             message = e.getMessage();
         }
+        log.error(message);
         return new ErrorResponse(message);
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleUserEmailOccupiedException(final UserEmailOccupiedException e) {
+        log.error(e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler
     public ErrorResponse handleObjectNotFoundException(ObjectNotFoundException e) {
+        log.error(e.getMessage());
         return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleThrowable(final Throwable e) {
+        log.error(e.getMessage());
         return new ErrorResponse("Произошла непредвиденная ошибка.");
     }
-
 }
