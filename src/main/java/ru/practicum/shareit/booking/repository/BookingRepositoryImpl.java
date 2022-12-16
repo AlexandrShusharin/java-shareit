@@ -17,7 +17,7 @@ public class BookingRepositoryImpl implements BookingRepository {
 
     @Override
     public Booking get(long id) {
-       return bookings.get(id);
+        return bookings.get(id);
     }
 
     @Override
@@ -44,8 +44,8 @@ public class BookingRepositoryImpl implements BookingRepository {
     }
 
     private long getId() {
-        long lastId = bookings.entrySet().stream()
-                .mapToLong(o -> o.getValue().getId())
+        long lastId = bookings.values().stream()
+                .mapToLong(Booking::getId)
                 .max()
                 .orElse(0);
         return lastId + 1;

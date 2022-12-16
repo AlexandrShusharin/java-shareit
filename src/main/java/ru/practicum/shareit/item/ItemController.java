@@ -38,19 +38,20 @@ public class ItemController {
     }
 
     @PostMapping
-    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id")  long userId, @Valid @RequestBody ItemDto itemDto) {
+    public ItemDto addItem(@RequestHeader("X-Sharer-User-Id") long userId, @Valid @RequestBody ItemDto itemDto) {
         log.info("POST-запрос по адресу /items/, userId=" + userId + ", тело запроса:" + itemDto);
         return itemService.add(userId, itemDto);
     }
+
     @PatchMapping("/{id}")
-    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id")  long userId, @PathVariable long id,
+    public ItemDto updateItem(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long id,
                               @RequestBody ItemDto itemDto) {
         log.info("PATCH-запрос по адресу /items/, userId=" + userId + ", тело запроса:" + itemDto);
         return itemService.update(userId, id, itemDto);
     }
 
     @GetMapping("/search")
-    public List<ItemDto> findItems(@RequestHeader("X-Sharer-User-Id")  long userId, @RequestParam String text) {
+    public List<ItemDto> findItems(@RequestHeader("X-Sharer-User-Id") long userId, @RequestParam String text) {
         log.info("GET-запрос по адресу /items/search?text=" + text + ", userId=" + userId);
         return itemService.findItems(text);
     }
