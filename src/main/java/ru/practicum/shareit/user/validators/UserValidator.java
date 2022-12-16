@@ -12,8 +12,8 @@ public class UserValidator {
     private final UserRepository userRepository;
 
     public void validateEmailNotOccupied(String email) {
-        if (userRepository.getAll().stream().
-                anyMatch(o -> o.getEmail().equals(email))) {
+        if (userRepository.getAll().stream()
+                .anyMatch(o -> o.getEmail().equals(email))) {
             throw new UserEmailOccupiedException(String.format("Email = %s уже занят", email));
         }
     }

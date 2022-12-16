@@ -23,27 +23,27 @@ public class ItemServiceImpl implements ItemService {
     private final ItemValidator itemValidator;
 
     @Override
-    public ItemDto add(long userId, ItemDto ItemDto) {
+    public ItemDto add(long userId, ItemDto itemDto) {
         userValidator.validateUserIsExist(userId);
-        Item item = ItemMapper.toItem(ItemDto);
+        Item item = ItemMapper.toItem(itemDto);
         item.setOwner(userRepository.get(userId));
         return ItemMapper.toItemDto(itemRepository.add(item));
     }
 
     @Override
-    public ItemDto update(long userId, long itemId, ItemDto ItemDto) {
+    public ItemDto update(long userId, long itemId, ItemDto itemDto) {
         userValidator.validateUserIsExist(userId);
         itemValidator.validateItemIsExist(itemId);
         itemValidator.validateItemOwner(userId, itemId);
         Item existItem = itemRepository.get(itemId);
-        if (ItemDto.getName() != null) {
-            existItem.setName(ItemDto.getName());
+        if (itemDto.getName() != null) {
+            existItem.setName(itemDto.getName());
         }
-        if (ItemDto.getDescription() != null) {
-            existItem.setDescription(ItemDto.getDescription());
+        if (itemDto.getDescription() != null) {
+            existItem.setDescription(itemDto.getDescription());
         }
-        if (ItemDto.getAvailable() != null) {
-            existItem.setAvailable(ItemDto.getAvailable());
+        if (itemDto.getAvailable() != null) {
+            existItem.setAvailable(itemDto.getAvailable());
         }
         return ItemMapper.toItemDto(itemRepository.update(existItem));
     }
@@ -65,7 +65,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> getUserItems(long userId) {
         return new ArrayList<>(itemRepository.getUserItems(userId).stream()
-                .map(o -> ItemMapper.toItemDto(o))
+                .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList()));
     }
 
@@ -76,11 +76,10 @@ public class ItemServiceImpl implements ItemService {
                     .filter(o -> (o.getName().toLowerCase().contains(text.toLowerCase()) ||
                             o.getDescription().toLowerCase().contains(text.toLowerCase())) &&
                             o.isAvailable())
-                    .map(o -> ItemMapper.toItemDto(o))
+                    .map(ItemMapper::toItemDto)
                     .collect(Collectors.toList()));
         } else {
             return new ArrayList<>();
         }
-
     }
 }

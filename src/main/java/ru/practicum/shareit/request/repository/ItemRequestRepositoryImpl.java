@@ -1,6 +1,5 @@
 package ru.practicum.shareit.request.repository;
 
-import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.request.model.ItemRequest;
@@ -43,8 +42,8 @@ public class ItemRequestRepositoryImpl implements ItemRequestRepository {
     }
 
     private long getId() {
-        long lastId = itemRequests.entrySet().stream()
-                .mapToLong(o -> o.getValue().getId())
+        long lastId = itemRequests.values().stream()
+                .mapToLong(ItemRequest::getId)
                 .max()
                 .orElse(0);
         return lastId + 1;

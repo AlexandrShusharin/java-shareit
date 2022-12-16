@@ -1,6 +1,5 @@
 package ru.practicum.shareit.item.repository;
 
-import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.item.model.Item;
