@@ -1,5 +1,5 @@
 package ru.practicum.shareit.user.repository;
-
+/*
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.user.model.User;
@@ -8,9 +8,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-@Primary
 @Component
 public class UserRepositoryImpl implements UserRepository {
+
     private long lastId = 0;
     private final HashMap<Long, User> users = new HashMap<>();
 
@@ -45,4 +45,6 @@ public class UserRepositoryImpl implements UserRepository {
     private long getId() {
         return ++lastId;
     }
+
 }
+  */

@@ -9,6 +9,7 @@ import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.validators.UserValidator;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,14 +22,14 @@ public class UserServiceImpl implements UserService {
     public UserDto add(UserDto userDto) {
         User user = UserMapper.toUser(userDto);
         userValidator.validateEmailNotOccupied(user.getEmail());
-        user = userRepository.add(user);
+        user = userRepository.save(user);
         return UserMapper.toUserDto(user);
     }
 
     @Override
     public UserDto update(long userId, UserDto userDto) {
         userValidator.validateUserIsExist(userId);
-        User existUser = userRepository.get(userId);
+        User existUser = userRepository.getReferenceById(userId);
 
         if (userDto.getName() != null) {
             existUser.setName(userDto.getName());
@@ -38,24 +39,24 @@ public class UserServiceImpl implements UserService {
             userValidator.validateEmailNotOccupied(userDto.getEmail());
             existUser.setEmail(userDto.getEmail());
         }
-        return UserMapper.toUserDto(userRepository.update(existUser));
+        return UserMapper.toUserDto(userRepository.save(existUser));
     }
 
     @Override
     public void delete(long id) {
         userValidator.validateUserIsExist(id);
-        userRepository.delete(id);
+        userRepository.deleteById(id);
     }
 
     @Override
     public UserDto get(long id) {
         userValidator.validateUserIsExist(id);
-        return UserMapper.toUserDto(userRepository.get(id));
+        return UserMapper.toUserDto(userRepository.getReferenceById(id));
     }
 
     @Override
     public List<UserDto> getUsers() {
-        return userRepository.getAll().stream()
+        return userRepository.findAll().stream()
                 .map(UserMapper::toUserDto)
                 .collect(Collectors.toList());
     }

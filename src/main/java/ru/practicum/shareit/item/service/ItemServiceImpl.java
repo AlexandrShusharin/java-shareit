@@ -26,7 +26,7 @@ public class ItemServiceImpl implements ItemService {
     public ItemDto add(long userId, ItemDto itemDto) {
         userValidator.validateUserIsExist(userId);
         Item item = ItemMapper.toItem(itemDto);
-        item.setOwner(userRepository.get(userId));
+        item.setOwner(userRepository.getReferenceById(userId));
         return ItemMapper.toItemDto(itemRepository.add(item));
     }
 
