@@ -19,7 +19,7 @@ public class UserValidator {
     }
 
     public void validateUserIsExist(long userId) {
-        if (userRepository.getReferenceById(userId) == null) {
+        if (!userRepository.findById(userId).isPresent()) {
             throw new ObjectNotFoundException(String.format("Пользователь с id = %s не существует", userId));
         }
     }

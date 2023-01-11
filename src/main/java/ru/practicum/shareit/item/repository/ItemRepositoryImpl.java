@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+/*
 @Primary
 @Component
 public class ItemRepositoryImpl implements ItemRepository {
@@ -55,3 +55,4 @@ public class ItemRepositoryImpl implements ItemRepository {
         return ++lastId;
     }
 }
+*/

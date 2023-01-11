@@ -1,17 +1,12 @@
 package ru.practicum.shareit.booking.repository;
 
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.booking.model.Booking;
 
 import java.util.List;
 
-public interface BookingRepository {
-    Booking get(long id);
+@Repository
+public interface BookingRepository extends JpaRepository<Booking, Long> {
 
-    Booking add(Booking booking);
-
-    Booking update(Booking booking);
-
-    void delete(long id);
-
-    List<Booking> getAll();
 }

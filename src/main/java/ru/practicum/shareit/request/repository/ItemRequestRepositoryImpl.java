@@ -7,7 +7,7 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
+/*
 @Primary
 @Component
 public class ItemRequestRepositoryImpl implements ItemRequestRepository {
@@ -49,3 +49,4 @@ public class ItemRequestRepositoryImpl implements ItemRequestRepository {
         return lastId + 1;
     }
 }
+*/

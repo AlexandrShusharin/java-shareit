@@ -27,7 +27,7 @@ public class ItemServiceImpl implements ItemService {
         userValidator.validateUserIsExist(userId);
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(userRepository.getReferenceById(userId));
-        return ItemMapper.toItemDto(itemRepository.add(item));
+        return ItemMapper.toItemDto(itemRepository.save(item));
     }
 
     @Override
@@ -35,7 +35,7 @@ public class ItemServiceImpl implements ItemService {
         userValidator.validateUserIsExist(userId);
         itemValidator.validateItemIsExist(itemId);
         itemValidator.validateItemOwner(userId, itemId);
-        Item existItem = itemRepository.get(itemId);
+        Item existItem = itemRepository.getReferenceById(itemId);
         if (itemDto.getName() != null) {
             existItem.setName(itemDto.getName());
         }
@@ -45,7 +45,7 @@ public class ItemServiceImpl implements ItemService {
         if (itemDto.getAvailable() != null) {
             existItem.setAvailable(itemDto.getAvailable());
         }
-        return ItemMapper.toItemDto(itemRepository.update(existItem));
+        return ItemMapper.toItemDto(itemRepository.save(existItem));
     }
 
     @Override
@@ -53,18 +53,19 @@ public class ItemServiceImpl implements ItemService {
         userValidator.validateUserIsExist(userId);
         itemValidator.validateItemIsExist(itemId);
         itemValidator.validateItemOwner(userId, itemId);
-        itemRepository.delete(itemId);
+        itemRepository.deleteById(itemId);
     }
 
     @Override
     public ItemDto get(long itemId) {
         itemValidator.validateItemIsExist(itemId);
-        return ItemMapper.toItemDto(itemRepository.get(itemId));
+        return ItemMapper.toItemDto(itemRepository.getReferenceById(itemId));
     }
 
     @Override
     public List<ItemDto> getUserItems(long userId) {
-        return new ArrayList<>(itemRepository.getUserItems(userId).stream()
+        return new ArrayList<>(itemRepository.findAll().stream()
+                .filter(o -> o.getOwner().getId() == userId)
                 .map(ItemMapper::toItemDto)
                 .collect(Collectors.toList()));
     }
@@ -72,7 +73,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public List<ItemDto> findItems(String text) {
         if (text.length() > 0) {
-            return new ArrayList<>(itemRepository.getAll().stream()
+            return new ArrayList<>(itemRepository.findAll().stream()
                     .filter(o -> (o.getName().toLowerCase().contains(text.toLowerCase()) ||
                             o.getDescription().toLowerCase().contains(text.toLowerCase())) &&
                             o.isAvailable())

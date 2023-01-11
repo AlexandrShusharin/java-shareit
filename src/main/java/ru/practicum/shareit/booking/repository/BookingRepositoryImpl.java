@@ -8,7 +8,7 @@ import ru.practicum.shareit.booking.model.Booking;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
+/*
 @Primary
 @Component
 @AllArgsConstructor
@@ -51,3 +51,4 @@ public class BookingRepositoryImpl implements BookingRepository {
         return lastId + 1;
     }
 }
+*/

@@ -11,13 +11,13 @@ public class ItemValidator {
     private final ItemRepository itemRepository;
 
     public void validateItemIsExist(long itemId) {
-        if (itemRepository.get(itemId) == null) {
+        if (!itemRepository.findById(itemId).isPresent()) {
             throw new ObjectNotFoundException(String.format("Вещь с id = %s не существует", itemId));
         }
     }
 
     public void validateItemOwner(long userId, long itemId) {
-        if (itemRepository.get(itemId).getOwner().getId() != userId) {
+        if (itemRepository.getReferenceById(itemId).getOwner().getId() != userId) {
             throw new ObjectNotFoundException(String.format("Вещь с id = %s не принадлежит пользователю с id = %s",
                     itemId, userId));
         }

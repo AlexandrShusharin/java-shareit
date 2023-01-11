@@ -8,8 +8,8 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.validators.UserValidator;
 
+import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,7 +21,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto add(UserDto userDto) {
         User user = UserMapper.toUser(userDto);
-        userValidator.validateEmailNotOccupied(user.getEmail());
         user = userRepository.save(user);
         return UserMapper.toUserDto(user);
     }
@@ -36,7 +35,6 @@ public class UserServiceImpl implements UserService {
         }
 
         if (userDto.getEmail() != null && !userDto.getEmail().equals(existUser.getEmail())) {
-            userValidator.validateEmailNotOccupied(userDto.getEmail());
             existUser.setEmail(userDto.getEmail());
         }
         return UserMapper.toUserDto(userRepository.save(existUser));
@@ -57,6 +55,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getUsers() {
         return userRepository.findAll().stream()
+                .sorted(Comparator.comparing(User::getId))
                 .map(UserMapper::toUserDto)
                 .collect(Collectors.toList());
     }
