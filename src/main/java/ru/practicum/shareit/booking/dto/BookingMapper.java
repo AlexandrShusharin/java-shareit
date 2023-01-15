@@ -4,18 +4,18 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.model.User;
 
 public class BookingMapper {
-    public static BookingDto bookingToDto(Booking booking) {
-        return BookingDto.builder()
+    public static BookingDtoResponse bookingToDtoResponse(Booking booking) {
+        return BookingDtoResponse.builder()
                 .id(booking.getId())
                 .start(booking.getStart())
                 .end(booking.getEnd())
-                .itemId(booking.getItem().getId())
-                .bookerId(booking.getBooker().getId())
+                .item(booking.getItem())
+                .booker(booking.getBooker())
                 .status(booking.getStatus())
                 .build();
     }
 
-    public static Booking bookingFromDto(BookingDto bookingDto, Item item, User user) {
+    public static Booking bookingFromDto(BookingDtoRequest bookingDto, Item item, User user) {
         return Booking.builder()
                 .id(bookingDto.getId())
                 .start(bookingDto.getStart())

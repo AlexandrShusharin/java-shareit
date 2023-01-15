@@ -26,8 +26,8 @@ public class Booking {
     @OneToOne
     @JoinColumn(name = "item_id")
     Item item;
-    @OneToOne
-    @JoinColumn(name = "user_id")
+    @ManyToOne
+    @JoinColumn(name = "booker_id")
     User booker;
     @Column(name = "status")
     @Enumerated(EnumType.STRING)

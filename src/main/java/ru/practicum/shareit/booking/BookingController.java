@@ -3,11 +3,13 @@ package ru.practicum.shareit.booking;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.booking.dto.BookingDtoRequest;
+import ru.practicum.shareit.booking.dto.BookingDtoResponse;
+import ru.practicum.shareit.booking.model.BookingState;
 import ru.practicum.shareit.booking.service.BookingService;
-import ru.practicum.shareit.item.dto.ItemDto;
 
 import javax.validation.Valid;
+import java.util.List;
 
 /**
  * TODO Sprint add-bookings.
@@ -19,8 +21,26 @@ import javax.validation.Valid;
 public class BookingController {
     private final BookingService bookingService;
     @PostMapping
-    public BookingDto addBooking(@RequestHeader("X-Sharer-User-Id") long userId, @Valid @RequestBody BookingDto bookingDto) {
-        log.info("POST-запрос по адресу /items/, userId=" + userId + ", тело запроса:" + bookingDto);
+    public BookingDtoResponse addBooking(@RequestHeader("X-Sharer-User-Id") long userId,
+                                         @Valid @RequestBody BookingDtoRequest bookingDto) {
+        log.info("POST-запрос по адресу /bookings/, userId=" + userId + ", тело запроса:" + bookingDto);
         return bookingService.add(userId, bookingDto);
     }
+
+    @PatchMapping("/{id}")
+    public BookingDtoResponse updateBooking(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long id,
+                                    @RequestParam boolean approved) {
+        log.info("PATCH-запрос по адресу /bookings/, userId=" + userId + ", bookingId:" + id +
+                ", approved=" + approved);
+        return bookingService.updateStatus(userId, id, approved);
+    }
+
+    @GetMapping("/{id}")
+    public BookingDtoResponse getBookingList(@RequestHeader("X-Sharer-User-Id") long userId,
+                                                   @PathVariable long id) {
+        return bookingService.get(userId, id);
+    }
+
+    //@GetMapping(path = "/owner")
+
 }

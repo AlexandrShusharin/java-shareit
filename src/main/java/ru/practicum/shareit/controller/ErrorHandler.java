@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.exeptions.ErrorResponse;
+import ru.practicum.shareit.exeptions.ObjectIncorrectArguments;
 import ru.practicum.shareit.exeptions.ObjectNotFoundException;
 import ru.practicum.shareit.exeptions.UserEmailOccupiedException;
 
@@ -17,7 +18,8 @@ import java.util.Objects;
 @RestControllerAdvice
 public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({ValidationException.class, MethodArgumentNotValidException.class})
+    @ExceptionHandler({ValidationException.class, MethodArgumentNotValidException.class,
+            ObjectIncorrectArguments.class})
     public ErrorResponse handleValidationException(Exception e) {
         String message;
         if (e instanceof MethodArgumentNotValidException) {
