@@ -2,7 +2,7 @@ package ru.practicum.shareit.item.validators;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.exeptions.ObjectNotFoundException;
+import ru.practicum.shareit.exceptions.ObjectNotFoundException;
 import ru.practicum.shareit.item.repository.ItemRepository;
 
 @Component

@@ -2,8 +2,8 @@ package ru.practicum.shareit.user.validators;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import ru.practicum.shareit.exeptions.ObjectNotFoundException;
-import ru.practicum.shareit.exeptions.UserEmailOccupiedException;
+import ru.practicum.shareit.exceptions.ObjectNotFoundException;
+import ru.practicum.shareit.exceptions.UserEmailOccupiedException;
 import ru.practicum.shareit.user.repository.UserRepository;
 
 @Component

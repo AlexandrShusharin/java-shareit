@@ -1,4 +1,4 @@
-package ru.practicum.shareit.exeptions;
+package ru.practicum.shareit.exceptions;
 
 public class ObjectIncorrectArguments extends RuntimeException {
 

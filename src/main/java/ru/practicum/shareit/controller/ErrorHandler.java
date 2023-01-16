@@ -7,10 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import ru.practicum.shareit.exeptions.ErrorResponse;
-import ru.practicum.shareit.exeptions.ObjectIncorrectArguments;
-import ru.practicum.shareit.exeptions.ObjectNotFoundException;
-import ru.practicum.shareit.exeptions.UserEmailOccupiedException;
+import ru.practicum.shareit.exceptions.*;
 
 import javax.validation.ValidationException;
 import java.util.Objects;
@@ -19,22 +16,27 @@ import java.util.Objects;
 @RestControllerAdvice
 public class ErrorHandler {
 
-    @ExceptionHandler
+/*    @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleArgumentException(MethodArgumentTypeMismatchException e) {
         String message = "Unknown state: " + e.getValue().toString();
         log.error(message);
         return new ErrorResponse(message);
     }
+*/
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({ValidationException.class, MethodArgumentNotValidException.class,
-            ObjectIncorrectArguments.class})
+            ObjectIncorrectArguments.class, MethodArgumentTypeMismatchException.class,
+            BookingStatusProcessedException.class})
         public ErrorResponse handleValidationException(Exception e) {
         String message;
         if (e instanceof MethodArgumentNotValidException) {
             MethodArgumentNotValidException eValidation = (MethodArgumentNotValidException) e;
             message = Objects.requireNonNull(eValidation.getBindingResult().getFieldError()).getDefaultMessage();
+        } else if (e instanceof MethodArgumentTypeMismatchException) {
+            MethodArgumentTypeMismatchException eValidation = (MethodArgumentTypeMismatchException) e;
+            message = "Unknown state: " + eValidation.getValue().toString();
         } else {
             message = e.getMessage();
         }
@@ -42,10 +44,12 @@ public class ErrorHandler {
         return new ErrorResponse(message);
     }
 
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler
-    public ErrorResponse handleObjectNotFoundException(ObjectNotFoundException e) {
+    @ExceptionHandler({ObjectNotFoundException.class, UserNotOwnerException.class, BookerIsItemOwnerException.class})
+    public ErrorResponse handleObjectNotFoundException(Exception e) {
         log.error(e.getMessage());
+        System.out.println(e.getClass());
         return new ErrorResponse(e.getMessage());
     }
 
@@ -53,7 +57,6 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleThrowable(final Throwable e) {
         log.error(e.getMessage());
-        System.out.println(e.getClass());
         return new ErrorResponse("Произошла непредвиденная ошибка.");
     }
 }

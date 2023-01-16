@@ -45,6 +45,7 @@ public class BookingServiceImpl implements BookingService {
         booking.setStatus(BookingStatus.WAITING);
         bookingValidator.validateItemIsAvailable(booking.getItem());
         bookingValidator.validateBookingDates(booking);
+        bookingValidator.validateBookerIsNotOwner(booking, userId);
         return BookingMapper.bookingToDtoResponse(bookingRepository.save(booking));
     }
 
@@ -54,6 +55,7 @@ public class BookingServiceImpl implements BookingService {
         bookingValidator.validateBookingIsExist(bookingId);
         Booking booking = bookingRepository.getReferenceById(bookingId);
         bookingValidator.validateUserIsItemOwner(userId, booking);
+        bookingValidator.validateBookingStatus(booking);
         if (approved) {
             booking.setStatus(BookingStatus.APPROVED);
         } else {
@@ -77,38 +79,38 @@ public class BookingServiceImpl implements BookingService {
         List<BookingDtoResponse> bookings = new ArrayList<>();
         switch (state) {
             case ALL:
-                bookings = bookingRepository.findByUserAll(userId)
+                bookings = bookingRepository.findByOwnerAll(userId)
                         .stream()
                         .map(BookingMapper::bookingToDtoResponse)
                         .collect(Collectors.toList());
                 break;
             case PAST:
-                bookings = bookingRepository.findByUserAndPast(userId, BookingStatus.APPROVED, LocalDateTime.now())
+                bookings = bookingRepository.findByOwnerAndPast(userId, LocalDateTime.now())
                         .stream()
                         .map(BookingMapper::bookingToDtoResponse)
                         .collect(Collectors.toList());
 
                 break;
             case FUTURE:
-                bookings = bookingRepository.findByUserAndFuture(userId, BookingStatus.APPROVED, LocalDateTime.now())
+                bookings = bookingRepository.findByUserAndFuture(userId,LocalDateTime.now())
                         .stream()
                         .map(BookingMapper::bookingToDtoResponse)
                         .collect(Collectors.toList());
                 break;
             case CURRENT:
-                bookings = bookingRepository.findByUserAndCurrent(userId, BookingStatus.APPROVED, LocalDateTime.now())
+                bookings = bookingRepository.findByOwnerAndCurrent(userId, LocalDateTime.now())
                         .stream()
                         .map(BookingMapper::bookingToDtoResponse)
                         .collect(Collectors.toList());
                 break;
             case WAITING:
-                bookings = bookingRepository.findByUserAndByStatus(userId, BookingStatus.WAITING)
+                bookings = bookingRepository.findByOwnerAndByStatus(userId, BookingStatus.WAITING)
                         .stream()
                         .map(BookingMapper::bookingToDtoResponse)
                         .collect(Collectors.toList());
                 break;
             case REJECTED:
-                bookings = bookingRepository.findByUserAndByStatus(userId, BookingStatus.REJECTED)
+                bookings = bookingRepository.findByOwnerAndByStatus(userId, BookingStatus.REJECTED)
                         .stream()
                         .map(BookingMapper::bookingToDtoResponse)
                         .collect(Collectors.toList());
@@ -157,7 +159,7 @@ public class BookingServiceImpl implements BookingService {
                         .collect(Collectors.toList());
                 break;
             case REJECTED:
-                bookings = bookingRepository.findBookingByBooker_IdAndStatus(bookerId, BookingStatus.WAITING,
+                bookings = bookingRepository.findBookingByBooker_IdAndStatus(bookerId, BookingStatus.REJECTED,
                                 Sort.by("id").descending())
                         .stream()
                         .map(BookingMapper::bookingToDtoResponse)

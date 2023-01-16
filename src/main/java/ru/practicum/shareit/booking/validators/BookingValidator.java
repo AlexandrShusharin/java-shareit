@@ -3,10 +3,9 @@ package ru.practicum.shareit.booking.validators;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import ru.practicum.shareit.booking.model.Booking;
+import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
-import ru.practicum.shareit.exeptions.ObjectIncorrectArguments;
-import ru.practicum.shareit.exeptions.ObjectNotFoundException;
-import ru.practicum.shareit.exeptions.UserNotOwnerException;
+import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.repository.UserRepository;
 
@@ -49,6 +48,18 @@ public class BookingValidator {
         if (booking.getEnd().isBefore(booking.getStart())) {
             throw new ObjectIncorrectArguments("Время начало бронирования не может быть позже" +
                     " времени окончания бронирования");
+        }
+    }
+
+    public void validateBookerIsNotOwner (Booking booking, long userId) {
+        if (booking.getItem().getOwner().getId() == userId) {
+            throw new BookerIsItemOwnerException("Пользователь не может забронировать свою вещь");
+        }
+    }
+
+    public void validateBookingStatus (Booking booking) {
+        if (!booking.getStatus().equals(BookingStatus.WAITING)) {
+            throw new BookingStatusProcessedException("Нельзя изменить статус обработанного бронирования");
         }
     }
 
