@@ -17,7 +17,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/bookings")
+@RequestMapping("/bookings")
 public class BookingController {
     private final BookingService bookingService;
     @PostMapping
@@ -36,11 +36,24 @@ public class BookingController {
     }
 
     @GetMapping("/{id}")
-    public BookingDtoResponse getBookingList(@RequestHeader("X-Sharer-User-Id") long userId,
+    public BookingDtoResponse getBookingById(@RequestHeader("X-Sharer-User-Id") long userId,
                                                    @PathVariable long id) {
+        log.info("GET-запрос по адресу /bookings/, userId=" + userId + ", bookingId:" + id);
         return bookingService.get(userId, id);
     }
 
-    //@GetMapping(path = "/owner")
+    @GetMapping("/owner")
+    public List<BookingDtoResponse> getBookingListByOwner(@RequestHeader("X-Sharer-User-Id") long userId,
+                                             @RequestParam(defaultValue = "ALL") BookingState state) {
+        log.info("GET-запрос по адресу /bookings/owner, userId=" + userId + ", state=" + state);
+        return bookingService.getBookingListByOwner(userId, state);
+    }
+
+    @GetMapping()
+    public List<BookingDtoResponse> getBookingListByUSer(@RequestHeader("X-Sharer-User-Id") long userId,
+                                                   @RequestParam(defaultValue = "ALL") BookingState state) {
+        log.info("GET-запрос по адресу /bookings/, userId=" + userId + ", state=" + state);
+        return bookingService.getBookingListByUser(userId, state);
+    }
 
 }

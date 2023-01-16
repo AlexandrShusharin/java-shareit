@@ -1,8 +1,10 @@
 package ru.practicum.shareit.booking.service;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDtoRequest;
 import ru.practicum.shareit.booking.dto.BookingDtoResponse;
@@ -18,11 +20,14 @@ import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.validators.UserValidator;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Primary
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class BookingServiceImpl implements BookingService {
     private final UserValidator userValidator;
     private final ItemValidator itemValidator;
@@ -67,12 +72,98 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingDtoResponse> getBookingListByUser(User user, BookingState state) {
-        return null;
+    public List<BookingDtoResponse> getBookingListByOwner(long userId, BookingState state) {
+        userValidator.validateUserIsExist(userId);
+        List<BookingDtoResponse> bookings = new ArrayList<>();
+        switch (state) {
+            case ALL:
+                bookings = bookingRepository.findByUserAll(userId)
+                        .stream()
+                        .map(BookingMapper::bookingToDtoResponse)
+                        .collect(Collectors.toList());
+                break;
+            case PAST:
+                bookings = bookingRepository.findByUserAndPast(userId, BookingStatus.APPROVED, LocalDateTime.now())
+                        .stream()
+                        .map(BookingMapper::bookingToDtoResponse)
+                        .collect(Collectors.toList());
+
+                break;
+            case FUTURE:
+                bookings = bookingRepository.findByUserAndFuture(userId, BookingStatus.APPROVED, LocalDateTime.now())
+                        .stream()
+                        .map(BookingMapper::bookingToDtoResponse)
+                        .collect(Collectors.toList());
+                break;
+            case CURRENT:
+                bookings = bookingRepository.findByUserAndCurrent(userId, BookingStatus.APPROVED, LocalDateTime.now())
+                        .stream()
+                        .map(BookingMapper::bookingToDtoResponse)
+                        .collect(Collectors.toList());
+                break;
+            case WAITING:
+                bookings = bookingRepository.findByUserAndByStatus(userId, BookingStatus.WAITING)
+                        .stream()
+                        .map(BookingMapper::bookingToDtoResponse)
+                        .collect(Collectors.toList());
+                break;
+            case REJECTED:
+                bookings = bookingRepository.findByUserAndByStatus(userId, BookingStatus.REJECTED)
+                        .stream()
+                        .map(BookingMapper::bookingToDtoResponse)
+                        .collect(Collectors.toList());
+                break;
+        }
+        return bookings;
     }
 
     @Override
-    public List<BookingDtoResponse> getBookingListByOwner(User user, BookingState state) {
-        return null;
+    public List<BookingDtoResponse> getBookingListByUser(long bookerId, BookingState state) {
+        userValidator.validateUserIsExist(bookerId);
+        List<BookingDtoResponse> bookings = new ArrayList<>();
+        switch (state) {
+            case ALL:
+                bookings = bookingRepository.findBookingByBooker_Id(bookerId, Sort.by("id").descending())
+                        .stream()
+                        .map(BookingMapper::bookingToDtoResponse)
+                        .collect(Collectors.toList());
+                break;
+            case PAST:
+                bookings = bookingRepository.findBookingByBooker_IdAndEndIsBefore(bookerId, LocalDateTime.now(),
+                                Sort.by("id").descending())
+                        .stream()
+                        .map(BookingMapper::bookingToDtoResponse)
+                        .collect(Collectors.toList());
+                break;
+            case FUTURE:
+                bookings = bookingRepository.findBookingByBooker_IdAndStartIsAfter(bookerId, LocalDateTime.now(),
+                                Sort.by("id").descending())
+                        .stream()
+                        .map(BookingMapper::bookingToDtoResponse)
+                        .collect(Collectors.toList());
+                break;
+            case CURRENT:
+                bookings = bookingRepository.findBookingByBooker_IdAndStartIsBeforeAndEndIsAfter(bookerId,
+                                LocalDateTime.now(), LocalDateTime.now(), Sort.by("id").descending())
+                        .stream()
+                        .map(BookingMapper::bookingToDtoResponse)
+                        .collect(Collectors.toList());
+                break;
+            case WAITING:
+                bookings = bookingRepository.findBookingByBooker_IdAndStatus(bookerId, BookingStatus.WAITING,
+                                Sort.by("id").descending())
+                        .stream()
+                        .map(BookingMapper::bookingToDtoResponse)
+                        .collect(Collectors.toList());
+                break;
+            case REJECTED:
+                bookings = bookingRepository.findBookingByBooker_IdAndStatus(bookerId, BookingStatus.WAITING,
+                                Sort.by("id").descending())
+                        .stream()
+                        .map(BookingMapper::bookingToDtoResponse)
+                        .collect(Collectors.toList());
+                break;
+        }
+        return bookings;
     }
 }

@@ -6,6 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import ru.practicum.shareit.exeptions.ErrorResponse;
 import ru.practicum.shareit.exeptions.ObjectIncorrectArguments;
 import ru.practicum.shareit.exeptions.ObjectNotFoundException;
@@ -17,10 +18,19 @@ import java.util.Objects;
 @Slf4j
 @RestControllerAdvice
 public class ErrorHandler {
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleArgumentException(MethodArgumentTypeMismatchException e) {
+        String message = "Unknown state: " + e.getValue().toString();
+        log.error(message);
+        return new ErrorResponse(message);
+    }
+
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({ValidationException.class, MethodArgumentNotValidException.class,
             ObjectIncorrectArguments.class})
-    public ErrorResponse handleValidationException(Exception e) {
+        public ErrorResponse handleValidationException(Exception e) {
         String message;
         if (e instanceof MethodArgumentNotValidException) {
             MethodArgumentNotValidException eValidation = (MethodArgumentNotValidException) e;
@@ -43,6 +53,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handleThrowable(final Throwable e) {
         log.error(e.getMessage());
+        System.out.println(e.getClass());
         return new ErrorResponse("Произошла непредвиденная ошибка.");
     }
 }

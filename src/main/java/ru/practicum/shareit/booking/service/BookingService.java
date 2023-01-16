@@ -11,7 +11,6 @@ public interface BookingService {
     BookingDtoResponse add (long userId, BookingDtoRequest bookingDto);
     BookingDtoResponse updateStatus(long userId, long bookingId, boolean approved);
     BookingDtoResponse get(long userId, long bookingId);
-    List<BookingDtoResponse> getBookingListByUser(User user, BookingState state);
-    List<BookingDtoResponse> getBookingListByOwner(User user, BookingState state);
-
+    List<BookingDtoResponse> getBookingListByUser(long bookerId, BookingState state);
+    List<BookingDtoResponse> getBookingListByOwner(long userId, BookingState state);
 }
