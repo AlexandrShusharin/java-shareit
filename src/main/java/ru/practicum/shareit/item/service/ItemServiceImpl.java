@@ -7,10 +7,11 @@ import ru.practicum.shareit.booking.dto.BookingDtoForItem;
 import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.repository.BookingRepository;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemDtoWithBooking;
-import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.booking.validators.BookingValidator;
+import ru.practicum.shareit.item.dto.*;
+import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.validators.ItemValidator;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -18,7 +19,6 @@ import ru.practicum.shareit.user.validators.UserValidator;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,13 +30,15 @@ public class ItemServiceImpl implements ItemService {
     private final BookingRepository bookingRepository;
     private final UserValidator userValidator;
     private final ItemValidator itemValidator;
+    private final BookingValidator bookingValidator;
+    private final CommentRepository commentRepository;
 
     @Override
     public ItemDto add(long userId, ItemDto itemDto) {
         userValidator.validateUserIsExist(userId);
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(userRepository.getReferenceById(userId));
-        return ItemMapper.toItemDto(itemRepository.save(item));
+        return toItemDtoWithBooking(itemRepository.save(item));
     }
 
     @Override
@@ -54,7 +56,7 @@ public class ItemServiceImpl implements ItemService {
         if (itemDto.getAvailable() != null) {
             existItem.setAvailable(itemDto.getAvailable());
         }
-        return ItemMapper.toItemDto(itemRepository.save(existItem));
+        return toItemDtoWithBooking(itemRepository.save(existItem));
     }
 
     @Override
@@ -66,77 +68,75 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDtoWithBooking get(long itemId, long userId) {
+    public ItemDto get(long itemId, long userId) {
         itemValidator.validateItemIsExist(itemId);
         if (itemRepository.getReferenceById(itemId).getOwner().getId() == userId) {
-            return this.toItemDtoWhitBooking(itemRepository.getReferenceById(itemId));
+            return this.toItemDtoWithBooking(itemRepository.getReferenceById(itemId));
         } else {
-            return this.toItemDtoWhitBookingForNotOwner(itemRepository.getReferenceById(itemId));
+            return this.toItemDtoWithBookingForNotOwner(itemRepository.getReferenceById(itemId));
         }
     }
 
     @Override
-    public List<ItemDtoWithBooking> getUserItems(long userId) {
+    public List<ItemDto> getUserItems(long userId) {
         return new ArrayList<>(itemRepository.findItemsByOwner_Id(userId, Sort.by("id").ascending())
                 .stream()
-                .map(this::toItemDtoWhitBooking)
+                .map(this::toItemDtoWithBooking)
                 .collect(Collectors.toList()));
-        /*return new ArrayList<>(itemRepository.findAll().stream()
-                .filter(o -> o.getOwner().getId() == userId)
-                .map(this::toItemDtoWhitBooking)
-                .sorted(Comparator.comparing(ItemDtoWithBooking::getId))
-                .collect(Collectors.toList()));
-
-         */
     }
 
     @Override
-    public List<ItemDtoWithBooking> findItems(String text) {
+    public List<ItemDto> findItems(String text) {
         String searchText = "%" + text + "%";
         if (text.length() > 0) {
             return new ArrayList<>(
                     itemRepository.findItemsByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseAndAvailableTrue(
                                     searchText, searchText).stream()
-                            .map(this::toItemDtoWhitBooking)
+                            .map(this::toItemDtoWithBooking)
                             .collect(Collectors.toList()));
-
-            /*            return new ArrayList<>(itemRepository.findAll().stream()
-                    .filter(o -> (o.getName().toLowerCase().contains(text.toLowerCase()) ||
-                            o.getDescription().toLowerCase().contains(text.toLowerCase())) &&
-                            o.isAvailable())
-                    .map(this::toItemDtoWhitBooking)
-                    .collect(Collectors.toList()));
-
- */
         } else {
             return new ArrayList<>();
         }
     }
 
-    private ItemDtoWithBooking toItemDtoWhitBooking(Item item) {
+    @Override
+    public CommentDto addComment(long userId, long itemId, CommentDto commentDto) {
+        itemValidator.validateItemIsExist(itemId);
+        userValidator.validateUserIsExist(userId);
+        bookingValidator.validateUserMadeItemBooking(userId, itemId);
+        Comment comment = CommentMapper.toComment(commentDto);
+        comment.setItem(itemRepository.getReferenceById(itemId));
+        comment.setAuthor(userRepository.getReferenceById(userId));
+        comment.setCreated(LocalDateTime.now());
+        return CommentMapper.toCommentDto(commentRepository.save(comment));
+    }
+
+    private ItemDto toItemDtoWithBooking(Item item) {
         Booking lastBooking = bookingRepository.findFirst1BookingByItem_IdAndStartIsBefore(item.getId(),
                 LocalDateTime.now(), Sort.by("start").descending());
         Booking nextBooking = bookingRepository.findFirst1BookingByItem_IdAndStartIsAfter(item.getId(),
                 LocalDateTime.now(), Sort.by("start").ascending());
+
         BookingDtoForItem lastBookingDto = lastBooking != null ? BookingMapper.bookingToDtoForItem(lastBooking) : null;
         BookingDtoForItem nextBookingDto = nextBooking != null ? BookingMapper.bookingToDtoForItem(nextBooking) : null;
 
-        return ItemDtoWithBooking.builder()
-                .id(item.getId())
-                .name(item.getName())
-                .description(item.getDescription())
-                .available(item.isAvailable())
-                .lastBooking(lastBookingDto)
-                .nextBooking(nextBookingDto)
-                .build();
+        ItemDto itemDto = ItemMapper.toItemDto(item);
+        itemDto.setLastBooking(lastBookingDto);
+        itemDto.setNextBooking(nextBookingDto);
+        itemDto.setComments(getItemComments(item.getId()));
+
+        return  itemDto;
     }
 
-    private ItemDtoWithBooking toItemDtoWhitBookingForNotOwner(Item item) {
-        return ItemDtoWithBooking.builder()
-                .id(item.getId())
-                .name(item.getName())
-                .description(item.getDescription())
-                .available(item.isAvailable())
-                .build();
+    private ItemDto toItemDtoWithBookingForNotOwner(Item item) {
+        ItemDto itemDto = ItemMapper.toItemDto(item);
+        itemDto.setComments(getItemComments(item.getId()));
+        return  itemDto;
+    }
+
+    private List<CommentDto> getItemComments(long itemId) {
+        return commentRepository.findCommentsByItem_Id(itemId).stream()
+                .map(CommentMapper::toCommentDto)
+                .collect(Collectors.toList());
     }
 }

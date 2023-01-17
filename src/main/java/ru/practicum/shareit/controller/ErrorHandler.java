@@ -28,7 +28,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({ValidationException.class, MethodArgumentNotValidException.class,
             ObjectIncorrectArguments.class, MethodArgumentTypeMismatchException.class,
-            BookingStatusProcessedException.class})
+            BookingStatusProcessedException.class, UserNotItemBookerException.class})
         public ErrorResponse handleValidationException(Exception e) {
         String message;
         if (e instanceof MethodArgumentNotValidException) {

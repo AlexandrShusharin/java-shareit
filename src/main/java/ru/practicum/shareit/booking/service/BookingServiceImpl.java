@@ -1,8 +1,6 @@
 package ru.practicum.shareit.booking.service;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Primary;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -16,7 +14,6 @@ import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.booking.validators.BookingValidator;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.validators.ItemValidator;
-import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.validators.UserValidator;
 
@@ -40,8 +37,9 @@ public class BookingServiceImpl implements BookingService {
     public BookingDtoResponse add(long userId, BookingDtoRequest bookingDto) {
         userValidator.validateUserIsExist(userId);
         itemValidator.validateItemIsExist(bookingDto.getItemId());
-        Booking booking = BookingMapper.bookingFromDto(bookingDto,
-                itemRepository.getReferenceById(bookingDto.getItemId()), userRepository.getReferenceById(userId));
+        Booking booking = BookingMapper.bookingFromDto(bookingDto);
+        booking.setItem(itemRepository.getReferenceById(bookingDto.getItemId()));
+        booking.setBooker(userRepository.getReferenceById(userId));
         booking.setStatus(BookingStatus.WAITING);
         bookingValidator.validateItemIsAvailable(booking.getItem());
         bookingValidator.validateBookingDates(booking);

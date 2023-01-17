@@ -7,22 +7,19 @@ import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exceptions.*;
 import ru.practicum.shareit.item.model.Item;
-import ru.practicum.shareit.user.repository.UserRepository;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
 public class BookingValidator {
     private final BookingRepository bookingRepository;
-    private final UserRepository userRepository;
-    public void validateBookingIsExist(long bookingId) {
-        if (!bookingRepository.findById(bookingId).isPresent()) {
-            throw new ObjectNotFoundException(String.format("Бронирование с id = %s не существует", bookingId));
-        }
-    }
 
-    public void validateUserIsBookingOwner(long bookerId, Booking booking) {
-        if (booking.getBooker().getId() != userRepository.getReferenceById(bookerId).getId()) {
-            throw new UserNotOwnerException("Пользователь не является автором бронирования");
+    public void validateBookingIsExist(long bookingId) {
+        if (bookingRepository.findById(bookingId).isEmpty()) {
+            throw new ObjectNotFoundException(String.format("Бронирование с id = %s не существует", bookingId));
         }
     }
 
@@ -60,6 +57,16 @@ public class BookingValidator {
     public void validateBookingStatus (Booking booking) {
         if (!booking.getStatus().equals(BookingStatus.WAITING)) {
             throw new BookingStatusProcessedException("Нельзя изменить статус обработанного бронирования");
+        }
+    }
+
+    public void validateUserMadeItemBooking(long userId, long itemId) {
+        List<Booking> userBookings = new ArrayList<>(bookingRepository
+                .findBookingsByBooker_IdAndItem_IdAndStatusAndEndBefore(userId, itemId,
+                        BookingStatus.APPROVED, LocalDateTime.now()));
+        if (userBookings.size() == 0) {
+            throw new UserNotItemBookerException(String.format("Пользователь с id = %s не бронировал вещь с id = %s ",
+                    userId, itemId));
         }
     }
 
