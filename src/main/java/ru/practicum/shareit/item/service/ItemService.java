@@ -12,7 +12,7 @@ public interface ItemService {
 
     void delete(long userId, long itemId);
 
-    ItemDtoWithBooking get(long itemId);
+    ItemDtoWithBooking get(long itemId, long userId);
 
     List<ItemDtoWithBooking> getUserItems(long userId);
 

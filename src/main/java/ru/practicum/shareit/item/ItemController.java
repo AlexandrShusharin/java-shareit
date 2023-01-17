@@ -23,7 +23,7 @@ public class ItemController {
     @GetMapping("/{id}")
     public ItemDtoWithBooking getItemById(@RequestHeader("X-Sharer-User-Id") long userId, @PathVariable long id) {
         log.info("GЕT-запрос по адресу /items/" + id + ", userId=" + userId);
-        return itemService.get(id);
+        return itemService.get(id, userId);
     }
 
     @GetMapping

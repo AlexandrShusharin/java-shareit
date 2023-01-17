@@ -18,6 +18,7 @@ import ru.practicum.shareit.user.validators.UserValidator;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -65,28 +66,48 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDtoWithBooking get(long itemId) {
+    public ItemDtoWithBooking get(long itemId, long userId) {
         itemValidator.validateItemIsExist(itemId);
-        return this.toItemDtoWhitBooking(itemRepository.getReferenceById(itemId));
+        if (itemRepository.getReferenceById(itemId).getOwner().getId() == userId) {
+            return this.toItemDtoWhitBooking(itemRepository.getReferenceById(itemId));
+        } else {
+            return this.toItemDtoWhitBookingForNotOwner(itemRepository.getReferenceById(itemId));
+        }
     }
 
     @Override
     public List<ItemDtoWithBooking> getUserItems(long userId) {
-        return new ArrayList<>(itemRepository.findAll().stream()
-                .filter(o -> o.getOwner().getId() == userId)
+        return new ArrayList<>(itemRepository.findItemsByOwner_Id(userId, Sort.by("id").ascending())
+                .stream()
                 .map(this::toItemDtoWhitBooking)
                 .collect(Collectors.toList()));
+        /*return new ArrayList<>(itemRepository.findAll().stream()
+                .filter(o -> o.getOwner().getId() == userId)
+                .map(this::toItemDtoWhitBooking)
+                .sorted(Comparator.comparing(ItemDtoWithBooking::getId))
+                .collect(Collectors.toList()));
+
+         */
     }
 
     @Override
     public List<ItemDtoWithBooking> findItems(String text) {
+        String searchText = "%" + text + "%";
         if (text.length() > 0) {
-            return new ArrayList<>(itemRepository.findAll().stream()
+            return new ArrayList<>(
+                    itemRepository.findItemsByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseAndAvailableTrue(
+                                    searchText, searchText).stream()
+                            .map(this::toItemDtoWhitBooking)
+                            .collect(Collectors.toList()));
+
+            /*            return new ArrayList<>(itemRepository.findAll().stream()
                     .filter(o -> (o.getName().toLowerCase().contains(text.toLowerCase()) ||
                             o.getDescription().toLowerCase().contains(text.toLowerCase())) &&
                             o.isAvailable())
                     .map(this::toItemDtoWhitBooking)
                     .collect(Collectors.toList()));
+
+ */
         } else {
             return new ArrayList<>();
         }
@@ -107,6 +128,15 @@ public class ItemServiceImpl implements ItemService {
                 .available(item.isAvailable())
                 .lastBooking(lastBookingDto)
                 .nextBooking(nextBookingDto)
+                .build();
+    }
+
+    private ItemDtoWithBooking toItemDtoWhitBookingForNotOwner(Item item) {
+        return ItemDtoWithBooking.builder()
+                .id(item.getId())
+                .name(item.getName())
+                .description(item.getDescription())
+                .available(item.isAvailable())
                 .build();
     }
 }
