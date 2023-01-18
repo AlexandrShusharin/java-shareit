@@ -13,7 +13,11 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "bookings")
 @Builder
-@AllArgsConstructor @NoArgsConstructor @Getter @Setter @ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
 public class Booking {
     @Id
     @Column(name = "id")

@@ -41,20 +41,20 @@ public class BookingValidator {
         }
     }
 
-    public void validateBookingDates (Booking booking) {
+    public void validateBookingDates(Booking booking) {
         if (booking.getEnd().isBefore(booking.getStart())) {
             throw new ObjectIncorrectArguments("Время начало бронирования не может быть позже" +
                     " времени окончания бронирования");
         }
     }
 
-    public void validateBookerIsNotOwner (Booking booking, long userId) {
+    public void validateBookerIsNotOwner(Booking booking, long userId) {
         if (booking.getItem().getOwner().getId() == userId) {
             throw new BookerIsItemOwnerException("Пользователь не может забронировать свою вещь");
         }
     }
 
-    public void validateBookingStatus (Booking booking) {
+    public void validateBookingStatus(Booking booking) {
         if (!booking.getStatus().equals(BookingStatus.WAITING)) {
             throw new BookingStatusProcessedException("Нельзя изменить статус обработанного бронирования");
         }

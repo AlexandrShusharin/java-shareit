@@ -125,13 +125,13 @@ public class ItemServiceImpl implements ItemService {
         itemDto.setNextBooking(nextBookingDto);
         itemDto.setComments(getItemComments(item.getId()));
 
-        return  itemDto;
+        return itemDto;
     }
 
     private ItemDto toItemDtoWithBookingForNotOwner(Item item) {
         ItemDto itemDto = ItemMapper.toItemDto(item);
         itemDto.setComments(getItemComments(item.getId()));
-        return  itemDto;
+        return itemDto;
     }
 
     private List<CommentDto> getItemComments(long itemId) {

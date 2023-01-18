@@ -90,7 +90,7 @@ public class BookingServiceImpl implements BookingService {
 
                 break;
             case FUTURE:
-                bookings = bookingRepository.findByUserAndFuture(userId,LocalDateTime.now())
+                bookings = bookingRepository.findByUserAndFuture(userId, LocalDateTime.now())
                         .stream()
                         .map(BookingMapper::bookingToDtoResponse)
                         .collect(Collectors.toList());

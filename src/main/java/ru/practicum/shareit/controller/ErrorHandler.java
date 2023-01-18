@@ -16,20 +16,11 @@ import java.util.Objects;
 @RestControllerAdvice
 public class ErrorHandler {
 
-/*    @ExceptionHandler
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleArgumentException(MethodArgumentTypeMismatchException e) {
-        String message = "Unknown state: " + e.getValue().toString();
-        log.error(message);
-        return new ErrorResponse(message);
-    }
-*/
-
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({ValidationException.class, MethodArgumentNotValidException.class,
             ObjectIncorrectArguments.class, MethodArgumentTypeMismatchException.class,
             BookingStatusProcessedException.class, UserNotItemBookerException.class})
-        public ErrorResponse handleValidationException(Exception e) {
+    public ErrorResponse handleValidationException(Exception e) {
         String message;
         if (e instanceof MethodArgumentNotValidException) {
             MethodArgumentNotValidException eValidation = (MethodArgumentNotValidException) e;
@@ -43,7 +34,6 @@ public class ErrorHandler {
         log.error(message);
         return new ErrorResponse(message);
     }
-
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler({ObjectNotFoundException.class, UserNotOwnerException.class, BookerIsItemOwnerException.class})

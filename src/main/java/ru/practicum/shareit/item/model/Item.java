@@ -12,7 +12,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-@Setter @ToString
+@Setter
+@ToString
 public class Item {
     @Id
     @Column(name = "id")

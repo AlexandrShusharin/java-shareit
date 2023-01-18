@@ -12,7 +12,11 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "requests")
 @Builder
-@AllArgsConstructor @NoArgsConstructor @Getter @Setter @ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+@ToString
 public class ItemRequest {
     @Id
     @Column(name = "id")
@@ -20,7 +24,7 @@ public class ItemRequest {
     private long id;
     @Column(name = "description")
     private String description;
-    @ManyToOne(fetch=FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "requestor_id")
     private User requestor;
     @Column(name = "created")
