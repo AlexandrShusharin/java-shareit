@@ -14,15 +14,15 @@ import java.util.List;
 @Data
 @Builder
 public class ItemDto {
-    long id;
+    private long id;
     @NotBlank(message = "Не задано название вещи")
-    String name;
+    private String name;
     @NotBlank(message = "Не задано описание вещи")
-    String description;
+    private String description;
     @NotNull(message = "Не задана доступность вещи")
-    Boolean available;
-    BookingDtoForItem lastBooking;
-    BookingDtoForItem nextBooking;
-    List<CommentDto> comments;
-    Long request;
+    private Boolean available;
+    private BookingDtoForItem lastBooking;
+    private BookingDtoForItem nextBooking;
+    private List<CommentDto> comments;
+    private Long request;
 }

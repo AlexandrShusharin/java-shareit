@@ -15,15 +15,15 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class BookingDtoRequest {
-    long id;
+    private long id;
     @Future(message = "Не верно задано время начало бронирования")
     @NotNull(message = "Не задано время начало бронирования")
-    LocalDateTime start;
+    private LocalDateTime start;
     @Future(message = "Не верно задано время окончания бронирования")
     @NotNull(message = "Не задано время окончания бронирования")
-    LocalDateTime end;
+    private LocalDateTime end;
     @NotNull(message = "Не задана вещь для бронирования")
-    long itemId;
-    long bookerId;
-    BookingStatus status;
+    private long itemId;
+    private long bookerId;
+    private BookingStatus status;
 }

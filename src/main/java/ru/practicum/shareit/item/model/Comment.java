@@ -18,15 +18,15 @@ public class Comment {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+    private long id;
     @Column(name = "text")
-    String text;
+    private String text;
     @ManyToOne
     @JoinColumn(name = "author_id")
-    User author;
+    private User author;
     @ManyToOne
     @JoinColumn(name = "item_id")
-    Item item;
+    private Item item;
     @JoinColumn(name = "created")
-    LocalDateTime created;
+    private LocalDateTime created;
 }

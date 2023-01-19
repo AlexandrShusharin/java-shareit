@@ -2,10 +2,13 @@ package ru.practicum.shareit.item.dto;
 
 import ru.practicum.shareit.item.model.Comment;
 
-public class CommentMapper {
+public final class CommentMapper {
+    private CommentMapper() {
+    }
+
     public static Comment toComment(CommentDto commentDto) {
         return Comment.builder()
-                .text(commentDto.text)
+                .text(commentDto.getText())
                 .build();
     }
 

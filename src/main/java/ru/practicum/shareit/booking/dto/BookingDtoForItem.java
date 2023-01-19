@@ -8,8 +8,8 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class BookingDtoForItem {
-    long id;
-    LocalDateTime start;
-    LocalDateTime end;
-    long bookerId;
+    private long id;
+    private LocalDateTime start;
+    private LocalDateTime end;
+    private long bookerId;
 }
