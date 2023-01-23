@@ -14,6 +14,8 @@ import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.validators.ItemValidator;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
+import ru.practicum.shareit.request.validators.RequestValidator;
 import ru.practicum.shareit.user.repository.UserRepository;
 import ru.practicum.shareit.user.validators.UserValidator;
 
@@ -32,12 +34,18 @@ public class ItemServiceImpl implements ItemService {
     private final ItemValidator itemValidator;
     private final BookingValidator bookingValidator;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository itemRequestRepository;
+    private final RequestValidator requestValidator;
 
     @Override
     public ItemDto add(long userId, ItemDto itemDto) {
         userValidator.validateUserIsExist(userId);
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(userRepository.getReferenceById(userId));
+        if (itemDto.getRequest() != null) {
+            requestValidator.validateRequestIsExist(itemDto.getRequest());
+            item.setRequest(itemRequestRepository.getReferenceById(itemDto.getId()));
+        }
         return toItemDtoWithBooking(itemRepository.save(item));
     }
 
@@ -55,6 +63,11 @@ public class ItemServiceImpl implements ItemService {
         }
         if (itemDto.getAvailable() != null) {
             existItem.setAvailable(itemDto.getAvailable());
+        }
+
+        if (itemDto.getRequest() != null) {
+            requestValidator.validateRequestIsExist(itemDto.getRequest());
+            existItem.setRequest(itemRequestRepository.getReferenceById(itemDto.getId()));
         }
         return toItemDtoWithBooking(itemRepository.save(existItem));
     }
