@@ -42,9 +42,9 @@ public class ItemServiceImpl implements ItemService {
         userValidator.validateUserIsExist(userId);
         Item item = ItemMapper.toItem(itemDto);
         item.setOwner(userRepository.getReferenceById(userId));
-        if (itemDto.getRequest() != null) {
-            requestValidator.validateRequestIsExist(itemDto.getRequest());
-            item.setRequest(itemRequestRepository.getReferenceById(itemDto.getId()));
+        if (itemDto.getRequestId() != null) {
+            requestValidator.validateRequestIsExist(itemDto.getRequestId());
+            item.setRequest(itemRequestRepository.getReferenceById(itemDto.getRequestId()));
         }
         return toItemDtoWithBooking(itemRepository.save(item));
     }
@@ -64,10 +64,9 @@ public class ItemServiceImpl implements ItemService {
         if (itemDto.getAvailable() != null) {
             existItem.setAvailable(itemDto.getAvailable());
         }
-
-        if (itemDto.getRequest() != null) {
-            requestValidator.validateRequestIsExist(itemDto.getRequest());
-            existItem.setRequest(itemRequestRepository.getReferenceById(itemDto.getId()));
+        if (itemDto.getRequestId() != null) {
+            requestValidator.validateRequestIsExist(itemDto.getRequestId());
+            existItem.setRequest(itemRequestRepository.getReferenceById(itemDto.getRequestId()));
         }
         return toItemDtoWithBooking(itemRepository.save(existItem));
     }

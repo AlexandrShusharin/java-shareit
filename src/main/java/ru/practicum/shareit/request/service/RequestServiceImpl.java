@@ -5,7 +5,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
@@ -42,27 +41,27 @@ public class RequestServiceImpl implements RequestService {
     }
 
     @Override
-    public ItemRequestDto get(long userId, long requestId) {
+    public ItemRequestResponseDto get(long userId, long requestId) {
         userValidator.validateUserIsExist(userId);
         requestValidator.validateRequestIsExist(requestId);
-        return ItemRequestMapper.toItemRequestDto(itemRequestRepository.getReferenceById(requestId));
+        return this.itemRequestToReponseDto(itemRequestRepository.getReferenceById(requestId));
     }
 
     @Override
-    public List<ItemRequestDto> getAllByOwner(long userId) {
+    public List<ItemRequestResponseDto> getAllByOwner(long userId) {
         userValidator.validateUserIsExist(userId);
         return new ArrayList<>(itemRequestRepository.findAllByRequestor_Id(userId).stream()
-                .map(ItemRequestMapper::toItemRequestDto)
+                .map(this::itemRequestToReponseDto)
                 .collect(Collectors.toList()));
     }
 
     @Override
-    public List<ItemRequestDto> getAll(long userId, int from, int size) {
+    public List<ItemRequestResponseDto> getAll(long userId, int from, int size) {
         userValidator.validateUserIsExist(userId);
         Sort sortById = Sort.by(Sort.Direction.ASC, "id");
         Pageable page = PageRequest.of(from, size, sortById);
         return new ArrayList<>(itemRequestRepository.findAll(page).stream()
-                .map(ItemRequestMapper::toItemRequestDto)
+                .map(this::itemRequestToReponseDto)
                 .collect(Collectors.toList()));
     }
 
@@ -74,7 +73,9 @@ public class RequestServiceImpl implements RequestService {
                 .description(itemRequest.getDescription())
                 .requestor(itemRequest.getRequestor())
                 .created(itemRequest.getCreated())
-                .items(new ArrayList<>())
+                .items(new ArrayList<>(itemRepository.findAllByRequest_Id(itemRequest.getId()).stream()
+                        .map(ItemMapper::toItemRequestDto)
+                        .collect(Collectors.toList())))
                 .build();
     }
 }

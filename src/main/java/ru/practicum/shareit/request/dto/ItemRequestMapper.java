@@ -19,8 +19,6 @@ public final class ItemRequestMapper {
         return ItemRequest.builder()
                 .id(itemRequestDto.getId())
                 .description(itemRequestDto.getDescription())
-                .requestor(itemRequestDto.getRequestor())
-                .created(itemRequestDto.getCreated())
                 .build();
     }
 }
