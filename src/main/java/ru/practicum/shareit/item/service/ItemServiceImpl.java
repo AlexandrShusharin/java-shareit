@@ -1,6 +1,8 @@
 package ru.practicum.shareit.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingDtoForItem;
@@ -90,20 +92,24 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public List<ItemDto> getUserItems(long userId) {
-        return new ArrayList<>(itemRepository.findItemsByOwner_Id(userId, Sort.by("id").ascending())
+    public List<ItemDto> getUserItems(long userId, int from, int size) {
+        Sort sortById = Sort.by("id").ascending();
+        Pageable page = PageRequest.of(getPageNumber(from, size), size, sortById);
+        return new ArrayList<>(itemRepository.findItemsByOwner_Id(userId, page)
                 .stream()
                 .map(this::toItemDtoWithBooking)
                 .collect(Collectors.toList()));
     }
 
     @Override
-    public List<ItemDto> findItems(String text) {
+    public List<ItemDto> findItems(String text, int from, int size) {
+        Sort sortById = Sort.by("id").ascending();
+        Pageable page = PageRequest.of(getPageNumber(from, size), size, sortById);
         String searchText = "%" + text + "%";
         if (text.length() > 0) {
             return new ArrayList<>(
                     itemRepository.findItemsByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseAndAvailableTrue(
-                                    searchText, searchText).stream()
+                                    searchText, searchText, page).stream()
                             .map(this::toItemDtoWithBooking)
                             .collect(Collectors.toList()));
         } else {
@@ -150,5 +156,9 @@ public class ItemServiceImpl implements ItemService {
         return commentRepository.findCommentsByItem_Id(itemId).stream()
                 .map(CommentMapper::toCommentDto)
                 .collect(Collectors.toList());
+    }
+
+    private int getPageNumber(int from, int size) {
+        return from/size;
     }
 }
