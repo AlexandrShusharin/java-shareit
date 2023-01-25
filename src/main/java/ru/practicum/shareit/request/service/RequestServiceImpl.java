@@ -6,7 +6,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.item.dto.ItemMapper;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestMapper;
@@ -59,15 +58,13 @@ public class RequestServiceImpl implements RequestService {
     public List<ItemRequestResponseDto> getAll(long userId, int from, int size) {
         userValidator.validateUserIsExist(userId);
         Sort sortById = Sort.by(Sort.Direction.ASC, "id");
-        Pageable page = PageRequest.of(from, size, sortById);
-        return new ArrayList<>(itemRequestRepository.findAll(page).stream()
+        Pageable page = PageRequest.of(getPageNumber(from, size), size, sortById);
+        return new ArrayList<>(itemRequestRepository.findAllByRequestor_IdNot(userId, page).stream()
                 .map(this::itemRequestToReponseDto)
                 .collect(Collectors.toList()));
     }
 
     private ItemRequestResponseDto itemRequestToReponseDto(ItemRequest itemRequest) {
-        List<Item> items = itemRepository.findAllByRequest_Id(itemRequest.getId());
-
         return ItemRequestResponseDto.builder()
                 .id(itemRequest.getId())
                 .description(itemRequest.getDescription())
@@ -77,5 +74,9 @@ public class RequestServiceImpl implements RequestService {
                         .map(ItemMapper::toItemRequestDto)
                         .collect(Collectors.toList())))
                 .build();
+    }
+
+    private int getPageNumber(int from, int size) {
+        return from / size;
     }
 }

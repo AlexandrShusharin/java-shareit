@@ -2,6 +2,7 @@ package ru.practicum.shareit.request;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestResponseDto;
@@ -17,6 +18,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
+@Validated
 @RequestMapping(path = "/requests")
 public class ItemRequestController {
     private final RequestService requestService;
@@ -33,9 +35,9 @@ public class ItemRequestController {
     }
 
     @GetMapping("/all")
-    public List<ItemRequestResponseDto> findItems(@RequestHeader("X-Sharer-User-Id") long userId,
-                                          @Valid @RequestParam(required = false) @Min(value = 0) int from,
-                                          @Valid @RequestParam(required = false) @Min(value = 1) int size) {
+    public List<ItemRequestResponseDto> findRequests(@RequestHeader("X-Sharer-User-Id") long userId,
+                                          @RequestParam(defaultValue = "0") @Min(value = 0) int from,
+                                          @RequestParam(defaultValue = "1000000") @Min(value = 1) int size) {
         log.info("GET-запрос по адресу /requests/all?from=" + from + "&size=" + size + ", userId=" + userId);
         return requestService.getAll(userId, from, size);
     }
