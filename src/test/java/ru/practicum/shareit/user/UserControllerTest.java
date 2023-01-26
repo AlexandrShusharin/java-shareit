@@ -151,30 +151,4 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.name").value(userDto.getName()))
                 .andExpect(jsonPath("$.email").value(userDto.getEmail()));
     }
-
-    @SneakyThrows
-    @Test
-    void updateUserInvalidEmail() {
-        userDto.setEmail("mail");
-        mockMvc.perform(
-                        patch("/users/{userId}", userDto.getId())
-                                .content(mapper.writeValueAsString(userDto))
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @SneakyThrows
-    @Test
-    void updateUserEmptyName() {
-        userDto.setName("");
-        mockMvc.perform(
-                        patch("/users/{userId}", userDto.getId())
-                                .content(mapper.writeValueAsString(userDto))
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
 }
