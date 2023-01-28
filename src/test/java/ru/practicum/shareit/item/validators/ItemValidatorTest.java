@@ -49,6 +49,7 @@ class ItemValidatorTest {
                 .owner(user1)
                 .build();
     }
+
     @Test
     void validateItemIsExist() {
         when(itemRepository.findById(item1.getId())).thenReturn(Optional.empty());

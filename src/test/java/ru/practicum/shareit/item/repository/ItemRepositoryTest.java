@@ -87,8 +87,8 @@ class ItemRepositoryTest {
         user2 = userRepository.save(user2);
         item.setOwner(user2);
         item = itemRepository.save(item);
-        List<Item> foundItems = itemRepository.
-                findItemsByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseAndAvailableTrue(text, text,
+        List<Item> foundItems = itemRepository
+                .findItemsByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseAndAvailableTrue(text, text,
                         Pageable.unpaged());
         assertThat(foundItems, hasSize(1));
     }

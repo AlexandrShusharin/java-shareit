@@ -212,8 +212,8 @@ class BookingRepositoryTest {
     @Test
     void findBookingByBooker_IdAndStartIsBeforeAndEndIsAfter() {
         setData();
-        List<Booking> bookingList = bookingRepository.
-                findBookingByBooker_IdAndStartIsBeforeAndEndIsAfter(user1.getId(),
+        List<Booking> bookingList = bookingRepository
+                .findBookingByBooker_IdAndStartIsBeforeAndEndIsAfter(user1.getId(),
                         startBooking.plusDays(1), startBooking.plusDays(1), Pageable.unpaged());
         assertThat(bookingList, hasSize(1));
         assertThat(bookingList.get(0).getBooker().getId(), is(user1.getId()));
@@ -227,8 +227,8 @@ class BookingRepositoryTest {
     @Test
     void findFirst1BookingByItem_IdAndStartIsBefore() {
         setData();
-        Booking bookingFirst = bookingRepository.
-                findFirst1BookingByItem_IdAndStartIsBefore(item1.getId(),
+        Booking bookingFirst = bookingRepository
+                .findFirst1BookingByItem_IdAndStartIsBefore(item1.getId(),
                         startBooking.plusDays(1), Sort.by("id").descending());
         assertThat(bookingFirst.getItem().getId(), is(item1.getId()));
 
@@ -241,13 +241,13 @@ class BookingRepositoryTest {
     @Test
     void findFirst1BookingByItem_IdAndStartIsAfter() {
         setData();
-        Booking bookingFirst = bookingRepository.
-                findFirst1BookingByItem_IdAndStartIsAfter(item1.getId(),
+        Booking bookingFirst = bookingRepository
+                .findFirst1BookingByItem_IdAndStartIsAfter(item1.getId(),
                         startBooking.minusDays(1), Sort.by("id").descending());
         assertThat(bookingFirst.getItem().getId(), is(item1.getId()));
 
-        bookingFirst = bookingRepository.
-                findFirst1BookingByItem_IdAndStartIsAfter(item1.getId(),
+        bookingFirst = bookingRepository
+                .findFirst1BookingByItem_IdAndStartIsAfter(item1.getId(),
                         startBooking.plusDays(1), Sort.by("id").descending());
         assertThat(bookingFirst, nullValue());
     }
@@ -255,15 +255,15 @@ class BookingRepositoryTest {
     @Test
     void findBookingsByBooker_IdAndItem_IdAndStatusAndEndBefore() {
         setData();
-        List<Booking> bookingList = bookingRepository.
-                findBookingsByBooker_IdAndItem_IdAndStatusAndEndBefore(user1.getId(), item2.getId(),
+        List<Booking> bookingList = bookingRepository
+                .findBookingsByBooker_IdAndItem_IdAndStatusAndEndBefore(user1.getId(), item2.getId(),
                         BookingStatus.WAITING, endBooking.plusDays(1));
         assertThat(bookingList, hasSize(1));
         assertThat(bookingList.get(0).getBooker().getId(), is(user1.getId()));
         assertThat(bookingList.get(0).getItem().getId(), is(item2.getId()));
 
-        bookingList = bookingRepository.
-                findBookingsByBooker_IdAndItem_IdAndStatusAndEndBefore(user1.getId(), item2.getId(),
+        bookingList = bookingRepository
+                .findBookingsByBooker_IdAndItem_IdAndStatusAndEndBefore(user1.getId(), item2.getId(),
                         BookingStatus.WAITING, endBooking.minusDays(1));
         assertThat(bookingList, hasSize(0));
     }
