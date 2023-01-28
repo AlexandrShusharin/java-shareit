@@ -232,8 +232,8 @@ class BookingRepositoryTest {
                         startBooking.plusDays(1), Sort.by("id").descending());
         assertThat(bookingFirst.getItem().getId(), is(item1.getId()));
 
-        bookingFirst = bookingRepository.
-                findFirst1BookingByItem_IdAndStartIsBefore(item1.getId(),
+        bookingFirst = bookingRepository
+                .findFirst1BookingByItem_IdAndStartIsBefore(item1.getId(),
                         startBooking.minusDays(1), Sort.by("id").descending());
         assertThat(bookingFirst, nullValue());
     }

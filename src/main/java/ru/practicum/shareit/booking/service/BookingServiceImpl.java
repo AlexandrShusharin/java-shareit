@@ -142,6 +142,6 @@ public class BookingServiceImpl implements BookingService {
     }
 
     private int getPageNumber(int from, int size) {
-        return from/size;
+        return from / size;
     }
 }
