@@ -74,7 +74,7 @@ class UserServiceTest {
         doThrow(new ObjectNotFoundException("404")).when(userValidator).validateUserIsExist(userDto.getId());
         final ObjectNotFoundException exception = Assertions.assertThrows(
                 ObjectNotFoundException.class,
-                () ->userService.update(userDto.getId(), userDto));
+                () -> userService.update(userDto.getId(), userDto));
         Assertions.assertEquals("404", exception.getMessage());
     }
 

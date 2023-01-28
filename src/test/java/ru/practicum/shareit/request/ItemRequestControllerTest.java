@@ -9,14 +9,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.practicum.shareit.item.dto.ItemForItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.request.dto.ItemRequestResponseDto;
 import ru.practicum.shareit.request.service.RequestService;
-import ru.practicum.shareit.user.UserController;
-import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.model.User;
-import ru.practicum.shareit.user.service.UserService;
 
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
@@ -25,9 +21,6 @@ import java.util.List;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -75,7 +68,7 @@ class ItemRequestControllerTest {
                 .requestor(new User(1L, "user", "user@mail.ru"))
                 .created(LocalDateTime.now())
                 .description("Need hammer")
-                .items(new ArrayList<ItemForItemRequestDto>())
+                .items(new ArrayList<>())
                 .build();
     }
 
@@ -115,7 +108,7 @@ class ItemRequestControllerTest {
                                 .header("X-Sharer-User-Id", userId)
                                 .param("from", String.valueOf(from))
                                 .param("size", String.valueOf(size))
-                        )
+                )
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)));
     }

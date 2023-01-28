@@ -97,7 +97,7 @@ class BookingControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(bookingDtoRequest.getItemId()), Long.class))
                 .andExpect(jsonPath("$.item.id", is(item.getId()), Long.class))
-                .andExpect(jsonPath("$.booker.id", is(user.getId()),Long.class));
+                .andExpect(jsonPath("$.booker.id", is(user.getId()), Long.class));
     }
 
     @SneakyThrows
@@ -132,7 +132,7 @@ class BookingControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(bookingDtoRequest.getItemId()), Long.class))
                 .andExpect(jsonPath("$.item.id", is(item.getId()), Long.class))
-                .andExpect(jsonPath("$.booker.id", is(user.getId()),Long.class));
+                .andExpect(jsonPath("$.booker.id", is(user.getId()), Long.class));
     }
 
     @SneakyThrows
@@ -150,7 +150,7 @@ class BookingControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(bookingDtoRequest.getItemId()), Long.class))
                 .andExpect(jsonPath("$.item.id", is(item.getId()), Long.class))
-                .andExpect(jsonPath("$.booker.id", is(user.getId()),Long.class));
+                .andExpect(jsonPath("$.booker.id", is(user.getId()), Long.class));
     }
 
     @SneakyThrows

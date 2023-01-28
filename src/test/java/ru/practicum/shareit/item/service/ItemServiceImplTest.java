@@ -6,9 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
+
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.data.domain.Pageable;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
@@ -157,7 +156,7 @@ class ItemServiceImplTest {
         doThrow(new ObjectNotFoundException("404")).when(userValidator).validateUserIsExist(user.getId());
         final ObjectNotFoundException exception = Assertions.assertThrows(
                 ObjectNotFoundException.class,
-                () ->  itemService.add(user.getId(), itemDto));
+                () -> itemService.add(user.getId(), itemDto));
         assertEquals("404", exception.getMessage());
     }
 
@@ -166,7 +165,7 @@ class ItemServiceImplTest {
         doThrow(new ObjectNotFoundException("404")).when(requestValidator).validateRequestIsExist(user.getId());
         final ObjectNotFoundException exception = Assertions.assertThrows(
                 ObjectNotFoundException.class,
-                () ->  itemService.add(user.getId(), itemDto));
+                () -> itemService.add(user.getId(), itemDto));
         assertEquals("404", exception.getMessage());
     }
 
@@ -192,16 +191,16 @@ class ItemServiceImplTest {
         doThrow(new ObjectNotFoundException("404")).when(itemValidator).validateItemIsExist(item.getId());
         final ObjectNotFoundException exception = Assertions.assertThrows(
                 ObjectNotFoundException.class,
-                () ->  itemService.update(user.getId(), itemDto.getId(), itemDto));
+                () -> itemService.update(user.getId(), itemDto.getId(), itemDto));
         assertEquals("404", exception.getMessage());
     }
 
     @Test
     void updateUserNotOwner() {
-        doThrow(new ObjectNotFoundException("404")).when(itemValidator).validateItemOwner(user.getId(),item.getId());
+        doThrow(new ObjectNotFoundException("404")).when(itemValidator).validateItemOwner(user.getId(), item.getId());
         final ObjectNotFoundException exception = Assertions.assertThrows(
                 ObjectNotFoundException.class,
-                () ->  itemService.update(user.getId(), itemDto.getId(), itemDto));
+                () -> itemService.update(user.getId(), itemDto.getId(), itemDto));
         assertEquals("404", exception.getMessage());
     }
 
@@ -248,7 +247,7 @@ class ItemServiceImplTest {
     void getUserItems() {
         when(itemRepository.findItemsByOwner_Id(
                 eq(user.getId()), any())).thenReturn(List.of(item));
-        List<ItemDto> items = itemService.getUserItems(user.getId(),  from, size);
+        List<ItemDto> items = itemService.getUserItems(user.getId(), from, size);
         assertThat(items, hasSize(1));
     }
 
@@ -256,16 +255,16 @@ class ItemServiceImplTest {
     void findItems() {
         when(itemRepository.findItemsByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseAndAvailableTrue(
                 anyString(), anyString(), any())).thenReturn(List.of(item));
-        List<ItemDto> items = itemService.findItems("ham",  from, size);
+        List<ItemDto> items = itemService.findItems("ham", from, size);
         assertThat(items, hasSize(1));
     }
 
     @Test
     void findItemsWithEmptyText() {
-        List<ItemDto> items = itemService.findItems("",  from, size);
+        List<ItemDto> items = itemService.findItems("", from, size);
         assertThat(items, hasSize(0));
         verify(itemRepository, times(0))
-                .findItemsByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseAndAvailableTrue(any(),any(),
+                .findItemsByNameLikeIgnoreCaseOrDescriptionLikeIgnoreCaseAndAvailableTrue(any(), any(),
                         any());
     }
 

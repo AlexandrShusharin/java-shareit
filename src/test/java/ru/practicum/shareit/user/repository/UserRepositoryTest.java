@@ -5,15 +5,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.context.TestPropertySource;
 import ru.practicum.shareit.user.model.User;
 
-import javax.transaction.Transactional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @AutoConfigureTestDatabase
@@ -32,9 +29,9 @@ class UserRepositoryTest {
 
     @Test
     void saveNewUser() {
-       User addedUser = userRepository.save(user);
-       assertThat(addedUser.getId(), notNullValue());
-       assertThat(addedUser.getName(), equalTo(user.getName()));
-       assertThat(addedUser.getEmail(), equalTo(user.getEmail()));
+        User addedUser = userRepository.save(user);
+        assertThat(addedUser.getId(), notNullValue());
+        assertThat(addedUser.getName(), equalTo(user.getName()));
+        assertThat(addedUser.getEmail(), equalTo(user.getEmail()));
     }
 }

@@ -6,10 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.test.context.TestPropertySource;
 import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.repository.UserRepository;
@@ -74,7 +71,7 @@ class ItemRequestRepositoryTest {
         requestRepository.save(requestFromUser1);
         requestRepository.save(requestFromUser2);
 
-        List<ItemRequest>  requests= requestRepository.findAllByRequestor_Id(user1.getId());
+        List<ItemRequest> requests = requestRepository.findAllByRequestor_Id(user1.getId());
         assertThat(requests, hasSize(1));
         assertThat(requests.get(0).getRequestor().getId(), is(user1.getId()));
     }
@@ -91,7 +88,7 @@ class ItemRequestRepositoryTest {
         requestRepository.save(requestFromUser1);
         requestRepository.save(requestFromUser2);
 
-        List<ItemRequest>  requests= requestRepository.findAllByRequestor_IdNot(user1.getId(), Pageable.unpaged());
+        List<ItemRequest> requests = requestRepository.findAllByRequestor_IdNot(user1.getId(), Pageable.unpaged());
         assertThat(requests, hasSize(1));
         assertThat(requests.get(0).getRequestor().getId(), Matchers.not(user1.getId()));
     }

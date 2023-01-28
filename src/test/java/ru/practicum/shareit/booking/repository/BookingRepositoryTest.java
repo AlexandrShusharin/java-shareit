@@ -1,6 +1,5 @@
 package ru.practicum.shareit.booking.repository;
 
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +7,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import ru.practicum.shareit.booking.dto.BookingDtoResponse;
 import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.item.model.Item;
@@ -18,8 +16,6 @@ import ru.practicum.shareit.user.repository.UserRepository;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -110,7 +106,7 @@ class BookingRepositoryTest {
     void findByOwnerAll() {
         setData();
         List<Booking> bookingList = bookingRepository.findByOwnerAll(user1.getId(), Pageable.unpaged());
-        assertThat( bookingList, hasSize(1));
+        assertThat(bookingList, hasSize(1));
         assertThat(bookingList.get(0).getItem().getOwner().getId(), is(user1.getId()));
     }
 
@@ -119,7 +115,7 @@ class BookingRepositoryTest {
         setData();
         List<Booking> bookingList = bookingRepository.findByOwnerAndByStatus(user1.getId(), BookingStatus.WAITING,
                 Pageable.unpaged());
-        assertThat( bookingList, hasSize(1));
+        assertThat(bookingList, hasSize(1));
         assertThat(bookingList.get(0).getItem().getOwner().getId(), is(user1.getId()));
 
         bookingList = bookingRepository.findByOwnerAndByStatus(user1.getId(), BookingStatus.APPROVED,
@@ -131,7 +127,7 @@ class BookingRepositoryTest {
     void findByOwnerAndCurrent() {
         setData();
         List<Booking> bookingList = bookingRepository.findByOwnerAndCurrent(user1.getId(),
-               startBooking.plusDays(1), Pageable.unpaged());
+                startBooking.plusDays(1), Pageable.unpaged());
         assertThat(bookingList, hasSize(1));
         assertThat(bookingList.get(0).getItem().getOwner().getId(), is(user1.getId()));
 
@@ -179,7 +175,7 @@ class BookingRepositoryTest {
         setData();
         List<Booking> bookingList = bookingRepository.findBookingByBooker_IdAndStatus(user1.getId(),
                 BookingStatus.WAITING, Pageable.unpaged());
-        assertThat( bookingList, hasSize(1));
+        assertThat(bookingList, hasSize(1));
         assertThat(bookingList.get(0).getBooker().getId(), is(user1.getId()));
 
         bookingList = bookingRepository.findBookingByBooker_IdAndStatus(user1.getId(), BookingStatus.APPROVED,
@@ -192,7 +188,7 @@ class BookingRepositoryTest {
         setData();
         List<Booking> bookingList = bookingRepository.findBookingByBooker_IdAndStartIsAfter(user1.getId(),
                 startBooking.minusDays(1), Pageable.unpaged());
-        assertThat( bookingList, hasSize(1));
+        assertThat(bookingList, hasSize(1));
         assertThat(bookingList.get(0).getBooker().getId(), is(user1.getId()));
 
         bookingList = bookingRepository.findBookingByBooker_IdAndStartIsAfter(user1.getId(),
@@ -218,12 +214,12 @@ class BookingRepositoryTest {
         setData();
         List<Booking> bookingList = bookingRepository.
                 findBookingByBooker_IdAndStartIsBeforeAndEndIsAfter(user1.getId(),
-                startBooking.plusDays(1),startBooking.plusDays(1), Pageable.unpaged());
+                        startBooking.plusDays(1), startBooking.plusDays(1), Pageable.unpaged());
         assertThat(bookingList, hasSize(1));
         assertThat(bookingList.get(0).getBooker().getId(), is(user1.getId()));
 
         bookingList = bookingRepository.findBookingByBooker_IdAndStartIsBeforeAndEndIsAfter(user1.getId(),
-                startBooking.minusDays(1),startBooking.minusDays(1), Pageable.unpaged());
+                startBooking.minusDays(1), startBooking.minusDays(1), Pageable.unpaged());
 
         assertThat(bookingList, hasSize(0));
     }
@@ -259,14 +255,14 @@ class BookingRepositoryTest {
     @Test
     void findBookingsByBooker_IdAndItem_IdAndStatusAndEndBefore() {
         setData();
-        List<Booking> bookingList  = bookingRepository.
+        List<Booking> bookingList = bookingRepository.
                 findBookingsByBooker_IdAndItem_IdAndStatusAndEndBefore(user1.getId(), item2.getId(),
                         BookingStatus.WAITING, endBooking.plusDays(1));
         assertThat(bookingList, hasSize(1));
         assertThat(bookingList.get(0).getBooker().getId(), is(user1.getId()));
         assertThat(bookingList.get(0).getItem().getId(), is(item2.getId()));
 
-        bookingList  = bookingRepository.
+        bookingList = bookingRepository.
                 findBookingsByBooker_IdAndItem_IdAndStatusAndEndBefore(user1.getId(), item2.getId(),
                         BookingStatus.WAITING, endBooking.minusDays(1));
         assertThat(bookingList, hasSize(0));

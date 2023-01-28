@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import ru.practicum.shareit.user.dto.UserDto;
-import ru.practicum.shareit.user.model.User;
 
 import javax.transaction.Transactional;
 
@@ -37,6 +36,7 @@ public class UserServiceIntegrationTest {
                 .email("user2@mail.ru")
                 .build();
     }
+
     @Test
     void getUsersTest() {
         userService.add(userDto1);

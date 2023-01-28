@@ -159,6 +159,6 @@ public class ItemServiceImpl implements ItemService {
     }
 
     private int getPageNumber(int from, int size) {
-        return from/size;
+        return from / size;
     }
 }

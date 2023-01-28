@@ -66,7 +66,7 @@ class UserControllerTest {
                 .thenReturn(userDto);
 
         mockMvc.perform(
-                        get("/users/{userId}",userDto.getId()))
+                        get("/users/{userId}", userDto.getId()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(userDto.getId()), Long.class))
                 .andExpect(jsonPath("$.name", is(userDto.getName())))
@@ -80,7 +80,7 @@ class UserControllerTest {
                 .thenThrow(ObjectNotFoundException.class);
 
         mockMvc.perform(
-                        get("/users/{userId}",userDto.getId()))
+                        get("/users/{userId}", userDto.getId()))
                 .andExpect(status().isNotFound());
     }
 
