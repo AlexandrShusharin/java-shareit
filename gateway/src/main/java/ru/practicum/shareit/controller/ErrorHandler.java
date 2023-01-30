@@ -7,8 +7,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import ru.practicum.shareit.exceptions.*;
+import ru.practicum.shareit.exception.ErrorResponse;
 
+import javax.validation.ValidationException;
 import java.util.Objects;
 
 @Slf4j
@@ -16,9 +17,8 @@ import java.util.Objects;
 public class ErrorHandler {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({MethodArgumentNotValidException.class,
-            ObjectIncorrectArguments.class, MethodArgumentTypeMismatchException.class,
-            BookingStatusProcessedException.class, UserNotItemBookerException.class})
+    @ExceptionHandler({ValidationException.class, MethodArgumentNotValidException.class,
+            MethodArgumentTypeMismatchException.class})
     public ErrorResponse handleValidationException(Exception e) {
         String message;
         if (e instanceof MethodArgumentNotValidException) {
@@ -32,14 +32,6 @@ public class ErrorHandler {
         }
         log.error(message);
         return new ErrorResponse(message);
-    }
-
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    @ExceptionHandler({ObjectNotFoundException.class, UserNotOwnerException.class, BookerIsItemOwnerException.class})
-    public ErrorResponse handleObjectNotFoundException(Exception e) {
-        log.error(e.getMessage());
-        System.out.println(e.getClass());
-        return new ErrorResponse(e.getMessage());
     }
 
     @ExceptionHandler
