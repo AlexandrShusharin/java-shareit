@@ -102,22 +102,6 @@ class BookingControllerTest {
 
     @SneakyThrows
     @Test
-    void addBookingWrongEndAndStart() {
-        bookingDtoRequest.setStart(LocalDateTime.now().minusDays(3));
-        bookingDtoRequest.setEnd(LocalDateTime.now().minusDays(2));
-
-        mockMvc.perform(
-                        post("/bookings")
-                                .header("X-Sharer-User-Id", user.getId())
-                                .content(mapper.writeValueAsString(bookingDtoRequest))
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @SneakyThrows
-    @Test
     void updateBooking() {
         when(bookingService.updateStatus(user.getId(), bookingDtoRequest.getItemId(), true))
                 .thenReturn(bookingDtoResponse);

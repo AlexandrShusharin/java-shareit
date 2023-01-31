@@ -111,32 +111,6 @@ class UserControllerTest {
 
     @SneakyThrows
     @Test
-    void addUserIncorrectEmail() {
-        userDto.setEmail("mail");
-        mockMvc.perform(
-                        post("/users")
-                                .content(mapper.writeValueAsString(userDto))
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @SneakyThrows
-    @Test
-    void addUserEmptyName() {
-        userDto.setName("");
-        mockMvc.perform(
-                        post("/users")
-                                .content(mapper.writeValueAsString(userDto))
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
-
-    @SneakyThrows
-    @Test
     void updateUser() {
         when(userService.update(userDto.getId(), userDto))
                 .thenReturn(userDto);

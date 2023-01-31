@@ -115,32 +115,6 @@ class ItemRequestControllerTest {
 
     @SneakyThrows
     @Test
-    void findRequestsWrongParamFrom() {
-        from = -1;
-        mockMvc.perform(
-                        get("/requests/all")
-                                .header("X-Sharer-User-Id", userId)
-                                .param("from", String.valueOf(from))
-                                .param("size", String.valueOf(size))
-                )
-                .andExpect(status().isBadRequest());
-    }
-
-    @SneakyThrows
-    @Test
-    void findRequestsWrongParamSize() {
-        size = -1;
-        mockMvc.perform(
-                        get("/requests/all")
-                                .header("X-Sharer-User-Id", userId)
-                                .param("from", String.valueOf(from))
-                                .param("size", String.valueOf(size))
-                )
-                .andExpect(status().isBadRequest());
-    }
-
-    @SneakyThrows
-    @Test
     void addRequest() {
         when(requestService.add(userId, requestDto))
                 .thenReturn(requestResponseDto);
@@ -157,19 +131,4 @@ class ItemRequestControllerTest {
                 .andExpect(jsonPath("$.requestor.id").value(requestResponseDto.getRequestor().getId()));
     }
 
-    @SneakyThrows
-    @Test
-    void addRequestWhitEmptyDescription() {
-        when(requestService.add(userId, requestDto))
-                .thenReturn(requestResponseDto);
-        requestDto.setDescription("");
-        mockMvc.perform(
-                        post("/requests")
-                                .content(mapper.writeValueAsString(requestDto))
-                                .header("X-Sharer-User-Id", userId)
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest());
-    }
 }

@@ -129,54 +129,6 @@ class ItemControllerTest {
 
     @SneakyThrows
     @Test
-    void addItemWithoutName() {
-        itemDto.setName("");
-        mockMvc.perform(
-                        post("/items")
-                                .header("X-Sharer-User-Id", user.getId())
-                                .content(mapper.writeValueAsString(itemDto))
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-
-        ;
-    }
-
-    @SneakyThrows
-    @Test
-    void addItemWithoutDescription() {
-        itemDto.setDescription("");
-        mockMvc.perform(
-                        post("/items")
-                                .header("X-Sharer-User-Id", user.getId())
-                                .content(mapper.writeValueAsString(itemDto))
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-
-        ;
-    }
-
-    @SneakyThrows
-    @Test
-    void addItemWithoutAvailable() {
-        itemDto.setAvailable(null);
-        mockMvc.perform(
-                        post("/items")
-                                .header("X-Sharer-User-Id", user.getId())
-                                .content(mapper.writeValueAsString(itemDto))
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
-
-        ;
-    }
-
-    @SneakyThrows
-    @Test
     void updateItem() {
         when(itemService.update(user.getId(), itemDto.getId(), itemDto)).thenReturn(itemDto);
         mockMvc.perform(
@@ -223,22 +175,6 @@ class ItemControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.text", is(commentDto.getText())))
-        ;
-    }
-
-    @SneakyThrows
-    @Test
-    void addCommentWithoutText() {
-        when(itemService.addComment(user.getId(), itemDto.getId(), commentDto)).thenReturn(commentDto);
-        commentDto.setText("");
-        mockMvc.perform(
-                        post("/items/{id}/comment", itemDto.getId())
-                                .header("X-Sharer-User-Id", user.getId())
-                                .content(mapper.writeValueAsString(commentDto))
-                                .characterEncoding(StandardCharsets.UTF_8)
-                                .contentType(MediaType.APPLICATION_JSON)
-                                .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest())
         ;
     }
 }
