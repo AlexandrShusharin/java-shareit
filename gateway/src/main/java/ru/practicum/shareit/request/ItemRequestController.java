@@ -35,15 +35,15 @@ public class ItemRequestController {
 
     @GetMapping("/all")
     public ResponseEntity<Object> findRequests(@RequestHeader("X-Sharer-User-Id") long userId,
-                                                     @RequestParam(defaultValue = "0") @Min(value = 0) int from,
-                                                     @RequestParam(defaultValue = "1000000") @Min(value = 1) int size) {
+                                               @RequestParam(defaultValue = "0") @Min(value = 0) int from,
+                                               @RequestParam(defaultValue = "1000000") @Min(value = 1) int size) {
         log.info("GET-запрос по адресу /requests/all?from=" + from + "&size=" + size + ", userId=" + userId);
         return requestClient.getAllRequests(userId, from, size);
     }
 
     @PostMapping
     public ResponseEntity<Object> addRequest(@RequestHeader("X-Sharer-User-Id") long userId,
-                                     @Valid @RequestBody ItemRequestDto itemRequestDto) {
+                                             @Valid @RequestBody ItemRequestDto itemRequestDto) {
         log.info("POST-запрос по адресу /requests/, userId=" + userId + ", тело запроса:" + itemRequestDto);
         return requestClient.addRequest(userId, itemRequestDto);
     }
